@@ -1,38 +1,19 @@
 const PORT = process.env.PORT
-const path = require('path')
-const express = require('express');
+import path from 'path';
+import express from 'express';
+import posts from './routes/post.js';
 
 const app = express();
 
+//Body parser middleware
+app.use(express.json());
+app.use(express.urlencoded({extended: false}))
+
 //setup static folder
 //app.use(express.static(path.join(__dirname,'public')));
-let posts =[
-    {id: 1, title: 'PostOne'},
-    {id: 2, title: 'PostTwo'},
-    {id: 3, title: 'PostThree'},
-]
 
-//using querys
-app.get('/api/posts', (req,res)=> {
-    const limit = parseInt(req.query.limit);
-    if (!isNaN(limit) && limit>0){
-        return res.status(200).json(posts.slice(0,limit));
-    }
-    res.status(200).json(posts);
-    
-});
+app.use('/api/posts',posts);
 
-//GET single post
-app.get('/api/posts/:id', (req,res)=>{
-    const id = parseInt(req.params.id);
-   const post = posts.find((post)=>post.id===id)
-
-   if(!post){
-    return res.status(404).json({msg :`Post with id ${id} not found` })
-   }
-    res.status(200).json(post)
-   
-})
 
 
 
