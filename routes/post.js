@@ -9,7 +9,7 @@ let posts =[
 
 
 //using querys
-router.get('/',(req,res)=> {
+router.get('/',(req,res,next)=> {
     const limit = parseInt(req.query.limit);
     if (!isNaN(limit) && limit>0){
         return res.status(200).json(posts.slice(0,limit));
@@ -19,12 +19,14 @@ router.get('/',(req,res)=> {
 });
 
 //GET single post
-router.get('/:id', (req,res)=>{
+router.get('/:id', (req,res,next)=>{
     const id = parseInt(req.params.id);
    const post = posts.find((post)=>post.id===id);
 
    if(!post){
-    return res.status(404).json({msg :`Post with id ${id} not found` })
+    const error = new Error(`Post with id ${id} not found`)
+    error.status=404;
+    return next(error);
    }
     res.status(200).json(post);
    
@@ -32,21 +34,23 @@ router.get('/:id', (req,res)=>{
 
 
 // create new post
-router.post('/',(req,res)=>{
+router.post('/',(req,res,next)=>{
     const newPosts ={
         id: posts.length + 1,
         title: req.body.title
     };
 
     if(!newPosts.title){
-        return res.status(400).json({msg: 'please include a title'});
+        const error = new Error(`Include a title`)
+        error.status=404;
+        return next(error);
     } 
     posts.push(newPosts)
     res.status(201).json(posts);
 });
 
 //update
-router.put('/:id',(req,res)=>{
+router.put('/:id',(req,res,next)=>{
     const id = parseInt(req.params.id);
     const post = posts.find((post)=>post.id===id)
 
@@ -57,7 +61,7 @@ router.put('/:id',(req,res)=>{
     res.status(200).json(posts)
 });
 
-router.delete('/:id',(req,res)=>{
+router.delete('/:id',(req,res,next)=>{
     const id = parseInt(req.params.id);
     const post = posts.find((post)=>post.id===id)
 
