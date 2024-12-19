@@ -6,8 +6,10 @@ let posts =[
     {id: 2, title: 'PostTwo'},
     {id: 3, title: 'PostThree'},
 ]
+
+
 //using querys
-router.get('/', (req,res)=> {
+router.get('/',(req,res)=> {
     const limit = parseInt(req.query.limit);
     if (!isNaN(limit) && limit>0){
         return res.status(200).json(posts.slice(0,limit));
