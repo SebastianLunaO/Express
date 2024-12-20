@@ -29,7 +29,7 @@ async function showPosts() {
 async function addPost(e){
     e.preventDefault();
     const formData = new FormData(this);
-    const title = formData.get('titlee'); //selecting the element by the name in HTML File
+    const title = formData.get('title'); //selecting the element by the name in HTML File
 
     try {
         const res = await fetch('http://localhost:8000/api/posts',{
