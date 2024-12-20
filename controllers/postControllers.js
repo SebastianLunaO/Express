@@ -41,7 +41,7 @@ export const createPost = (req,res,next)=>{
 
     if(!newPosts.title){
         const error = new Error(`Include a title`)
-        error.status=404;
+        error.status=401;
         return next(error);
     } 
     posts.push(newPosts)
