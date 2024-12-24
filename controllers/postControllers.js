@@ -1,4 +1,4 @@
-
+import {getNotes,getNote,createNote,rmPost} from '../utils/utils.js'
 
 let posts =[
     {id: 1, title: 'PostOne'},
@@ -7,45 +7,45 @@ let posts =[
 ]
 
 // @desc Get all Posts --- GET /api/posts
-export const getPosts = (req,res,next)=> {
+export const getPosts = async (req,res,next)=> {
         const limit = parseInt(req.query.limit);
-        if (!isNaN(limit) && limit>0){
-            return res.status(200).json(posts.slice(0,limit));
+
+        if (!isNaN(limit) && limit>0 && limit<51){
+            const result = await getNotes(limit)
+            return res.status(200).send(result);
         }
-        res.status(200).json(posts);
+        const result = await getNotes()
+        res.status(200).send(result);
         
     }
 
 // @desc Get single Posts --- GET /api/posts
 
-export const getPost = (req,res,next)=>{
+export const getPost = async (req,res,next)=>{
     const id = parseInt(req.params.id);
-   const post = posts.find((post)=>post.id===id);
+    const result = await getNote(id)
 
-   if(!post){
+   if(result.length === 0){
     const error = new Error(`Post with id ${id} not found`)
     error.status=404;
     return next(error);
    }
-    res.status(200).json(post);
+    res.status(200).send(result);
    
 }
 
 
 // @desc Create a Post --- POST /api/posts
-export const createPost = (req,res,next)=>{
-    const newPosts ={
-        id: posts.length + 1,
-        title: req.body.title
-    };
-
-    if(!newPosts.title){
+export const createPost = async (req,res,next)=>{
+    const title = req.body.title
+    
+    if(!title){
         const error = new Error(`Include a title`)
         error.status=404;
         return next(error);
     } 
-    posts.push(newPosts)
-    res.status(201).json(posts);
+    const result = await createNote(title)
+    res.status(201).send(result);
 }
 
 // @desc Update a Post --- PUT /api/posts
