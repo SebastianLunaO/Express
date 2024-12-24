@@ -1,10 +1,5 @@
 import {getNotes,getNote,createNote,rmPost,updateNote,existID} from '../utils/utils.js'
 
-let posts =[
-    {id: 1, title: 'PostOne'},
-    {id: 2, title: 'PostTwo'},
-    {id: 3, title: 'PostThree'},
-]
 
 // @desc Get all Posts --- GET /api/posts
 export const getPosts = async (req,res,next)=> {
