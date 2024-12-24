@@ -25,7 +25,6 @@ export async function getNotes(limit=50) {
 
 export async function getNote(id) {
     
-
     const [result] = await pool.query(`SELECT * 
         FROM post
         WHERE id = ?;`,id);
@@ -50,7 +49,14 @@ export async function createNote(title) {
     return getNote(id) 
 }
 
-
+export async function updateNote(title,id) {
+    const [result] = await pool.query(
+        `UPDATE post
+        SET title = ?
+        WHERE id = ?`, [title,id]
+    ); 
+    return await getNote(id)
+}
 
 
 
@@ -63,3 +69,14 @@ export async function rmPost(id) {
     return rows
 }
 
+export async function existID(id) {
+    const [result] = await pool.query(
+        `SELECT EXISTS (
+    SELECT 1 
+    FROM post
+    WHERE id = ?);`,id
+    ) 
+    const jsonobj = result[0]
+    const row = Object.values(jsonobj)[0]
+    return row
+}

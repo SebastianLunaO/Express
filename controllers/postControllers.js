@@ -1,4 +1,4 @@
-import {getNotes,getNote,createNote,rmPost} from '../utils/utils.js'
+import {getNotes,getNote,createNote,rmPost,updateNote,existID} from '../utils/utils.js'
 
 let posts =[
     {id: 1, title: 'PostOne'},
@@ -49,25 +49,24 @@ export const createPost = async (req,res,next)=>{
 }
 
 // @desc Update a Post --- PUT /api/posts
-export const updatePost = (req,res,next)=>{
+export const updatePost = async (req,res,next)=>{
     const id = parseInt(req.params.id);
-    const post = posts.find((post)=>post.id===id)
-
-    if (!post){
+    const title = req.body.title;
+    const result = await updateNote(title,id)
+    if (result.length === 0){
         return res.status(404).json({mgs: `Post with id ${id} not found`})
     }
-    post.title = req.body.title;
-    res.status(200).json(posts)
+    res.status(200).send(result)
 }
 
 // @desc Delete a Post --- DELETE /api/posts
-export const removePost = (req,res,next)=>{
-    const id = parseInt(req.params.id);
-    const post = posts.find((post)=>post.id===id)
-
-    if (!post){
+export const removePost = async (req,res,next)=>{
+    const id = req.params.id
+    const exist = await existID(id)
+   
+    if (exist === 0){
         return res.status(404).json({mgs: `Post with id ${id} not found`})
     }
-    posts= posts.filter((post)=>post.id !==id)
-    res.status(200).json(posts);
+    const result = rmPost(id)
+    res.status(200).json({mgs: `Post with id ${id} deleted`});
 }
