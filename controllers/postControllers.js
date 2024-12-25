@@ -7,10 +7,10 @@ export const getPosts = async (req,res,next)=> {
 
         if (!isNaN(limit) && limit>0 && limit<51){
             const result = await getNotes(limit)
-            return res.status(200).send(result);
+            return res.status(200).json(result);
         }
         const result = await getNotes()
-        res.status(200).send(result);
+        res.status(200).json(result);
         
     }
 

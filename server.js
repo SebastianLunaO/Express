@@ -6,6 +6,7 @@ import posts from './routes/post.js';
 import logger from './middleware/logger.js'
 import error from './middleware/errorHandler.js'
 import notfound from './middleware/notFound.js';
+import cors from 'cors'
 
 const app = express();
 
@@ -17,6 +18,10 @@ console.log(__filename);
 //Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({extended: false}))
+app.use(
+    cors({
+    origin: "http://127.0.0.1:8000",
+}))
 
 //setup static folder
 app.use(express.static(path.join(__dirname,'public')));

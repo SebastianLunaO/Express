@@ -21,8 +21,6 @@ export async function getNotes(limit=50) {
 }
 
 
-
-
 export async function getNote(id) {
     
     const [result] = await pool.query(`SELECT * 
@@ -32,10 +30,6 @@ export async function getNote(id) {
     
     return rows
 }
-
-
-
-
 
 
 
@@ -57,7 +51,6 @@ export async function updateNote(title,id) {
     ); 
     return await getNote(id)
 }
-
 
 
 export async function rmPost(id) {
