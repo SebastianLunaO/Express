@@ -128,7 +128,7 @@ async function fetchData() {
   
   // Initialize fetching
   fetchData();
-  buttonSub.addEventListener('submit',addPost)
+ form.addEventListener('submit',addPost)
   // script.js
   // Send a DELETE request to the server
  
