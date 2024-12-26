@@ -4,7 +4,30 @@ const form = document.getElementById('add-post-form');
 const buttonSub = document.getElementById('newSubmit');
 // script.js
 
-// Simulate a fetch request to a server
+async function updateCardTitle(id, newTitle, titleElement) {
+  try {
+    // Send a PATCH request to update the title
+    const response = await fetch(`http://localhost:8000/api/posts/${id}`, {
+      method: 'PUT', // Or 'PUT' depending on your server's implementation
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ title: newTitle }),
+    });
+
+    if (!response.ok) {
+      console.error('Failed to update the card on the server');
+      return;
+    }
+
+    // Update the title in the DOM
+    titleElement.textContent = `Title: ${newTitle}`;
+    console.log(`Card with ID ${id} updated successfully`);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
 async function deleteCard(id, cardElement) {
     try {
       const response = await fetch(`http://localhost:8000/api/posts/${id}`, {
@@ -27,6 +50,7 @@ async function deleteCard(id, cardElement) {
   async function addPost(e){
     e.preventDefault();
     const formData = new FormData(this);
+    console.log(formData);
     const title = formData.get('title'); //selecting the element by the name in HTML File
 
     try {
@@ -41,12 +65,8 @@ async function deleteCard(id, cardElement) {
         if(!res.ok){
             throw new Error('Failed to add post')
         }
-
-        const newPost = await res.json();
-        const postEl = document.createElement('div');
-        postEl.textContent = newPost.title;
-        output.appendChild(postEl);
-        showPosts();
+        form.reset()
+        fetchData();
     } catch (error) {
         console.error('Error adding post',error)
     }
@@ -71,7 +91,6 @@ async function fetchData() {
   }
   
   // Generate cards dynamically
-  // Generate cards dynamically
   function displayCards(data) {
     const cardContainer = document.getElementById('card-container');
   
@@ -89,16 +108,27 @@ async function fetchData() {
       deleteButton.textContent = 'Delete';
       deleteButton.addEventListener('click', () => deleteCard(item.id, card));
   
+      const editButton = document.createElement('button');
+      editButton.className = 'edit';
+      editButton.textContent = 'Edit';
+      editButton.addEventListener('click', () => {
+        const newTitle = prompt('Enter new title:', item.title); // Prompt for the new title
+        if (newTitle) {
+          updateCardTitle(item.id, newTitle, titleElement); // Update the title
+        }
+      });
+  
       card.appendChild(idElement);
       card.appendChild(titleElement);
       card.appendChild(deleteButton);
+      card.appendChild(editButton);
       cardContainer.appendChild(card);
     });
   }
   
   // Initialize fetching
   fetchData();
-  buttonSub.addEventListener('submit',addPost)
+  form.addEventListener('submit',addPost)
   // script.js
   // Send a DELETE request to the server
  
